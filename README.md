@@ -36,10 +36,122 @@ To decrypt, use the INVERSE (opposite) of the last 3 rules, and the 1st as-is (d
 
 
 ## PROGRAM:
+```
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
+#define SIZE 5
+
+void prepareKeyTable(char key[], char keyTable[SIZE][SIZE]) {
+    int i, j, k, flag = 0, *dicty;
+    dicty = (int*)calloc(26, sizeof(int));
+
+    for (i = 0; i < SIZE; i++) {
+        for (j = 0; j < SIZE; j++) {
+            keyTable[i][j] = '\0';
+        }
+    }
+
+    for (i = 0; i < strlen(key); i++) {
+        if (key[i] != 'j') {
+            if (isalpha(key[i])) {
+                if (dicty[tolower(key[i]) - 'a'] == 0) {
+                    keyTable[flag / SIZE][flag % SIZE] = tolower(key[i]);
+                    dicty[tolower(key[i]) - 'a'] = 1;
+                    flag++;
+                }
+            }
+        }
+    }
+
+    for (i = 0; i < 26; i++) {
+        if (dicty[i] == 0 && i != ('j' - 'a')) {
+            keyTable[flag / SIZE][flag % SIZE] = i + 'a';
+            flag++;
+        }
+    }
+}
+
+void search(char keyTable[SIZE][SIZE], char a, char b, int pos[]) {
+    int i, j;
+
+    for (i = 0; i < SIZE; i++) {
+        for (j = 0; j < SIZE; j++) {
+            if (keyTable[i][j] == a) {
+                pos[0] = i;
+                pos[1] = j;
+            } else if (keyTable[i][j] == b) {
+                pos[2] = i;
+                pos[3] = j;
+            }
+        }
+    }
+}
+
+void encrypt(char str[], char keyTable[SIZE][SIZE]) {
+    int i, pos[4];
+
+    for (i = 0; i < strlen(str); i += 2) {
+        search(keyTable, str[i], str[i + 1], pos);
+
+        if (pos[0] == pos[2]) {
+            str[i] = keyTable[pos[0]][(pos[1] + 1) % SIZE];
+            str[i + 1] = keyTable[pos[2]][(pos[3] + 1) % SIZE];
+        } else if (pos[1] == pos[3]) {
+            str[i] = keyTable[(pos[0] + 1) % SIZE][pos[1]];
+            str[i + 1] = keyTable[(pos[2] + 1) % SIZE][pos[3]];
+        } else {
+            str[i] = keyTable[pos[0]][pos[3]];
+            str[i + 1] = keyTable[pos[2]][pos[1]];
+        }
+    }
+}
+
+void prepare(char str[], char ptrs[]) {
+    int i, j;
+
+    j = 0;
+    for (i = 0; i < strlen(str); i++) {
+        if (str[i] == 'j') {
+            str[i] = 'i';
+        }
+        if (str[i] != ' ') {
+            ptrs[j++] = tolower(str[i]);
+        }
+    }
+    ptrs[j] = '\0';
+
+    if (strlen(ptrs) % 2 != 0) {
+        ptrs[j++] = 'x';
+        ptrs[j] = '\0';
+    }
+}
+
+int main() {
+    char key[SIZE * SIZE], str[100], keyTable[SIZE][SIZE], strPrepared[100];
+
+    printf("Enter key: ");
+    scanf("%s", key);
+
+    prepareKeyTable(key, keyTable);
+
+    printf("Enter message: ");
+    scanf(" %[^\n]", str);
+
+    prepare(str, strPrepared);
+
+    encrypt(strPrepared, keyTable);
+
+    printf("Encrypted message: %s\n", strPrepared);
+
+    return 0;
+}
+
+```
 ## OUTPUT:
-Output:
-Key text: Monarchy Plain text: instruments Cipher text: gatlmzclrqtx
+
+![Screenshot 2024-08-31 215006](https://github.com/user-attachments/assets/790a5be2-d202-4123-9d16-d81a08f9e457)
 
 ## RESULT:
 The program is executed successfully
