@@ -36,7 +36,7 @@ To decrypt, use the INVERSE (opposite) of the last 3 rules, and the 1st as-is (d
 
 
 ## PROGRAM:
-```
+```C
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
