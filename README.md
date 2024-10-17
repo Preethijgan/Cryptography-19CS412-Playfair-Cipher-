@@ -259,7 +259,8 @@ int main() {
   
 ```
 ## OUTPUT:
-![Screenshot 2024-09-05 091850](https://github.com/user-attachments/assets/49c624b1-9682-4a61-b30f-7f7d9b65b840)
+![Screenshot 2024-10-17 092953](https://github.com/user-attachments/assets/79d1ddde-e5b3-47c1-849e-93d2f5d0eb06)
+
 
 
 
